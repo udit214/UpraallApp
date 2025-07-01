@@ -40,7 +40,11 @@ const OrganizationProjectList = () => {
     scale.value = withTiming(0.97, { duration: 100 }, () => {
       scale.value = withTiming(1, { duration: 100 });
     });
-    navigation.navigate('PMPDashboard', { project });
+    
+    navigation.navigate('DrawerGroup2', {
+  screen: 'project Dashboard',
+  params: { project: project }
+});
   };
 
   const loadTokenAndProjects = useCallback(async () => {

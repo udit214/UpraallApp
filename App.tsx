@@ -39,13 +39,13 @@ const App = () => {
   return (
     <SafeAreaProvider>
     <PaperProvider>
-      <NavigationContainer>
+
         {isLoggedIn ? (
           <BaseNavigator setIsLoggedIn={setIsLoggedIn} />
         ) : (
           <AppNavigator setIsLoggedIn={setIsLoggedIn} />
         )}
-      </NavigationContainer>
+
     </PaperProvider>
     </SafeAreaProvider>
   );

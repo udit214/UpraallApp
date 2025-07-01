@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Card, Button, Avatar, useTheme, Divider, ProgressBar } from 'react-native-paper';
 
-const ProjectDashboard = ({navigation, route }) => {
+const ProjectDashboard = ({navigation, route}) => {
   const theme = useTheme();
   const { project } = route.params;
   // Sample data
