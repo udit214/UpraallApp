@@ -17,7 +17,7 @@ import {
 import { launchImageLibrary } from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = 'http://192.168.1.5:8000';
+const BASE_URL = 'http://10.0.2.2:8000';
 
 const EditProfileScreen = ({ navigation }) => {
   const [profile, setProfile] = useState(null);
@@ -116,7 +116,7 @@ const EditProfileScreen = ({ navigation }) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 50 }}>
       <TouchableOpacity onPress={handleImagePick}>
         <Image source={{ uri: getLogoUri() }} style={styles.logo} />
         <Text style={styles.editImageText}>Tap to change logo</Text>

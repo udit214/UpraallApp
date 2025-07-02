@@ -4,17 +4,77 @@ import OrganizationProjectList from '../screens/project_dashboard/OrganizationPr
 import LogoutUser from '../screens/Drawer/LogoutScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import ProjectDashboard from '../screens/project_dashboard/ProjectDashboard';
-import ProjectStack from './candidatestack'; // ✅ stack with tabs + CreateCandidateScreen
 import { createStackNavigator } from '@react-navigation/stack';
 import PAndPDocumentPage from '../screens/Documents/P_and_P';
 import CosRecordsPage from '../screens/Documents/Cos_Records';
 import NCRScreen from '../screens/Documents/NCRScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import OrganizationProfileScreen from '../screens/Profiles/OrganizationProfileScreen';
+import EditProfileScreen from '../screens/Profiles/EditProfileScreen';
 
 const Drawer1 = createDrawerNavigator()
 const Drawer2 = createDrawerNavigator()
 const Stack = createStackNavigator()
 const RootStack = createStackNavigator();
+const Tabnav = createBottomTabNavigator()
+const Profilestack = createStackNavigator()
 
+const ProfilePageStack = () => {
+  return(
+    <Profilestack.Navigator
+    screenOptions={{headerShown:false}}
+    >
+      <Profilestack.Screen component={OrganizationProfileScreen} name='OrganizationProfileScreen' />
+      <Profilestack.Screen component={EditProfileScreen} name='EditProfileScreen' />
+    </Profilestack.Navigator>
+  )
+}
+
+
+const TabNavigation = ({route}) =>{
+  const { project } = route.params || {};
+  return(
+        <Tabnav.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: '#BB86FC',
+        tabBarStyle: { backgroundColor: '#121212' },
+      }}
+    >
+      <Tabnav.Screen
+        name="Home"
+        component={ProjectDashboard}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="home" size={24} color={color} />
+          ),
+        }}
+        initialParams={{ project }}
+      />
+      <Tabnav.Screen
+        name="Notice"
+        component={ProjectDashboard}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="home" size={24} color={color} />
+          ),
+        }}
+        initialParams={{ project }}
+      />
+      <Tabnav.Screen
+        name="Profile"
+        component={ProfilePageStack}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="home" size={24} color={color} />
+          ),
+        }}
+        initialParams={{ project }}
+      />
+    </Tabnav.Navigator>
+  )
+}
 
 const PMPDrawer = ({ route, setIsLoggedIn }) => {
   const { project } = route.params || {};
@@ -35,7 +95,7 @@ const PMPDrawer = ({ route, setIsLoggedIn }) => {
     >
       <Drawer2.Screen
         name="project Dashboard"
-        component={ProjectDashboard}
+        component={TabNavigation}
         initialParams={{ project }}
       />
       <Drawer2.Screen

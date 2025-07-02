@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator, Text } from 'react-native';
-import { Provider as PaperProvider } from 'react-native-paper';
+import { Provider as PaperProvider ,  MD3DarkTheme,} from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -38,7 +38,7 @@ const App = () => {
 
   return (
     <SafeAreaProvider>
-    <PaperProvider>
+    <PaperProvider theme={MD3DarkTheme}>
 
         {isLoggedIn ? (
           <BaseNavigator setIsLoggedIn={setIsLoggedIn} />

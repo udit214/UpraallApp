@@ -24,7 +24,7 @@ const OrganizationProfileScreen = () => {
   const fetchProfile = async () => {
     try {
       const token = await AsyncStorage.getItem('authToken');
-      const res = await fetch('http://192.168.1.5:8000/api_profile/organization/profile/', {
+      const res = await fetch('http://10.0.2.2:8000/api_profile/organization/profile/', {
         headers: { Authorization: `Token ${token}` },
       });
 
@@ -51,7 +51,7 @@ const OrganizationProfileScreen = () => {
   const getLogoUri = () => {
     if (profile?.logo?.startsWith('http')) return profile.logo;
     if (typeof profile?.logo === 'string') {
-      return `http://192.168.1.5:8000${profile.logo}`;
+      return `http://10.0.2.2:8000${profile.logo}`;
     }
     return 'https://via.placeholder.com/160';
   };
@@ -64,7 +64,13 @@ const OrganizationProfileScreen = () => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
         <Surface style={styles.card} elevation={4}>
-          <Image source={{ uri: getLogoUri() }} style={styles.logo} />
+          console.log('🖼️ logo uri = ', getLogoUri());
+
+                <Image
+        source={{ uri: getLogoUri() }}
+        style={styles.logo}
+        resizeMode="cover"
+      />
           <Text style={styles.name}>{profile.name}</Text>
           <Text style={styles.description}>{profile.description}</Text>
 
@@ -94,7 +100,7 @@ const OrganizationProfileScreen = () => {
             mode="contained"
             icon="pencil"
             style={styles.button}
-            onPress={() => navigation.navigate('EditProfile')}
+            onPress={() => navigation.navigate('EditProfileScreen')}
           >
             Edit Profile
           </Button>

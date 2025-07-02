@@ -12,7 +12,7 @@ class OrganizationProfile(models.Model):
     phone = models.CharField(max_length=20, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    logo = models.ImageField(upload_to='org_logos/', blank=True, null=True)
+    logo = models.ImageField(upload_to='org_logos/', blank=True, null=True , default='defaults/deafaultpic1.jpg')
     website = models.URLField(blank=True, null=True)
 
 

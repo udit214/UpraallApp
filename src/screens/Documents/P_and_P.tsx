@@ -204,7 +204,7 @@ const handlePickDocument = async () => {
     }
 
   return (
-    <PaperProvider theme={MD3DarkTheme}>
+
       <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
         <View style={styles.header}>
           <Text variant="headlineMedium">P&P Documents</Text>
@@ -254,7 +254,7 @@ const handlePickDocument = async () => {
           </View>
         </Modal>
       </View>
-    </PaperProvider>
+
   );
 };
 
