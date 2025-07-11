@@ -15,8 +15,9 @@ import {
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BASE_URL } from '../utils/config';
 
-const BASE_URL = 'http://10.0.2.2:8000';
+
 const DEFAULT_PROFILE_PIC = `${BASE_URL}/media/defaults/deafaultpic1.jpg`;
 
 const OrganizationProfileScreen = () => {

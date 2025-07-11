@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { BASE_URL } from '../utils/config';
 
 const OrganizationLogin = ({ setIsLoggedIn }) => {  // <-- Accept setIsLoggedIn prop
   const navigation = useNavigation();
@@ -21,7 +22,7 @@ const OrganizationLogin = ({ setIsLoggedIn }) => {  // <-- Accept setIsLoggedIn 
     setLoading(true);
 
     try {
-      const response = await fetch('http://10.0.2.2:8000/api/auth/organization_login/', {
+      const response = await fetch(`${BASE_URL}/api/auth/organization_login/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

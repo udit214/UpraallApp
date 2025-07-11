@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { Card, Button, Avatar, useTheme, Divider, ProgressBar } from 'react-native-paper';
 import axios from 'axios';
+import { BASE_URL } from '../utils/config';
 
 const ProjectDashboard = ({ navigation, route }) => {
   const theme = useTheme();
@@ -18,7 +19,7 @@ const ProjectDashboard = ({ navigation, route }) => {
 
   const fetchAcceptedCandidates = async () => {
     try {
-      const response = await axios.get(`http://10.0.2.2:8000/projects/${project.id}/accepted-candidates/`);
+      const response = await axios.get(`${BASE_URL}/projects/${project.id}/accepted-candidates/`);
       setTeam(response.data);
     } catch (error) {
       console.error('Error fetching candidates:', error);

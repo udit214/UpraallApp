@@ -23,9 +23,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNFS from 'react-native-fs';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import { BASE_URL } from '../utils/config';
 
-
-const SERVER_URL = 'http://10.0.2.2:8000/api_doc/documents-CosRecords/';
+const SERVER_URL = `${BASE_URL}/api_doc/documents-CosRecords/`;
 
 const CosRecordsPage = ({ project }) => {
   const navigation = useNavigation();

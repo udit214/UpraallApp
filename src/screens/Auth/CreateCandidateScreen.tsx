@@ -21,6 +21,8 @@ import {
 } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Image } from 'react-native';
+import { BASE_URL } from '../utils/config';
+
 const CandidateManagementScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const project = route.params?.project;
@@ -36,7 +38,7 @@ const CandidateManagementScreen = ({ navigation, route }) => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [requestedDisplayData, setRequestedDisplayData] = useState([]);
   const [assignedRole, setAssignedRole] = useState('');
-  const DEFAULT_PROFILE_PIC = 'http://10.0.2.2:8000/media/defaults/deafaultpic1.jpg';
+  const DEFAULT_PROFILE_PIC = `${BASE_URL}/media/defaults/deafaultpic1.jpg`;
 
 
   const handleChange = (key, value) => {
@@ -52,7 +54,7 @@ const CandidateManagementScreen = ({ navigation, route }) => {
     setLoading(true);
     try {
       const token = await AsyncStorage.getItem('authToken');
-      const res = await fetch('http://10.0.2.2:8000/api/auth/candidates/create/', {
+      const res = await fetch(`${BASE_URL}/api/auth/candidates/create/`, {
         method: 'POST',
         headers: { Authorization: `Token ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -75,7 +77,7 @@ const CandidateManagementScreen = ({ navigation, route }) => {
   const fetchCandidates = async () => {
     try {
       const token = await AsyncStorage.getItem('authToken');
-      const res = await fetch('http://10.0.2.2:8000/api/auth/organization/candidates/', {
+      const res = await fetch( `${BASE_URL}/api/auth/organization/candidates/`, {
         method: 'POST',
         headers: { Authorization: `Token ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ project_id: project.id }),
@@ -131,7 +133,7 @@ const CandidateManagementScreen = ({ navigation, route }) => {
     }
     try {
       const token = await AsyncStorage.getItem('authToken');
-      const res = await fetch('http://10.0.2.2:8000/api/auth/candidates/assign/', {
+      const res = await fetch(`${BASE_URL}/api/auth/candidates/assign/`, {
         method: 'POST',
         headers: {
           Authorization: `Token ${token}`,
@@ -163,7 +165,7 @@ const renderCandidate = ({ item }) => {
   const profilePic = item.profile_picture
     ? item.profile_picture.startsWith('http')
       ? item.profile_picture
-      : `http://10.0.2.2:8000${item.profile_picture}`
+      : `${BASE_URL}${item.profile_picture}`
     : DEFAULT_PROFILE_PIC;
 
   return (
@@ -195,7 +197,7 @@ const renderRequestedCandidate = ({ item }) => {
   const profilePic = profile.profile_picture
     ? profile.profile_picture.startsWith('http')
       ? profile.profile_picture
-      : `http://10.0.2.2:8000${profile.profile_picture}`
+      : `${BASE_URL}${profile.profile_picture}`
     : DEFAULT_PROFILE_PIC;
 
   return (

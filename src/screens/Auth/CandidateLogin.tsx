@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, Alert, StyleSheet, TouchableOpacity } from 'react-native';
-
+import { BASE_URL } from '../utils/config';
 const CandidateLogin = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -9,7 +9,7 @@ const CandidateLogin = ({ navigation }: any) => {
     const data = { email, password };
 
     try {
-      const response = await fetch('http://10.0.2.2:8000/api/auth/candidate_login/', {
+      const response = await fetch(`${BASE_URL}/api/auth/candidate_login/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

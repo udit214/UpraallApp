@@ -12,7 +12,7 @@ import { Text, Button, Card, Title, Paragraph } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'react-native-image-picker';
 import { Picker } from '@react-native-picker/picker';
-
+import { BASE_URL } from '../utils/config';
 
 const NCRScreen = ({ project }) => {
   const [ncrs, setNCRs] = useState([]);
@@ -40,7 +40,7 @@ const NCRScreen = ({ project }) => {
     }
     setToken(storedToken);
     try {
-      const response = await fetch('http://192.168.1.5:8000/api_doc/document-NCR/', {
+      const response = await fetch(`${BASE_URL}/api_doc/document-NCR/`, {
         headers: { Authorization: `Token ${storedToken}` },
       });
       const data = await response.json();
@@ -53,7 +53,7 @@ const NCRScreen = ({ project }) => {
   const deleteNCR = async (id) => {
     try {
       const token = await AsyncStorage.getItem('authToken');
-      await fetch(`http://192.168.1.5:8000/api_doc/document-NCR/${id}/`, {
+      await fetch(`${BASE_URL}/api_doc/document-NCR/${id}/`, {
         method: 'DELETE',
         headers: { Authorization: `Token ${token}` },
       });
@@ -111,7 +111,7 @@ const NCRScreen = ({ project }) => {
     }
 
     try {
-      const response = await fetch('http://10.0.2.2:8000/api_doc/document-NCR/', {
+      const response = await fetch('${BASE_URL}/api_doc/document-NCR/', {
         method: 'POST',
         headers: {
           Authorization: `Token ${token}`,

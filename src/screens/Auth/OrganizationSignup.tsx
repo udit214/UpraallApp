@@ -3,13 +3,14 @@ import {
   View, TextInput, Text, Alert,
   StyleSheet, ActivityIndicator, TouchableOpacity
 } from 'react-native';
-
+import { BASE_URL } from '../utils/config';
 const OrganizationSignup = ({ navigation }: any) => {
   const [organizationName, setOrganizationName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [contact, setContact] = useState('');
   const [loading, setLoading] = useState(false);
+
 
   const handleSignup = async () => {
     setLoading(true);
@@ -21,7 +22,7 @@ const OrganizationSignup = ({ navigation }: any) => {
     };
 
     try {
-      const response = await fetch('http://10.0.2.2:8000/api/auth/organization_signup/', {
+      const response = await fetch(`${BASE_URL}/api/auth/organization_signup/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

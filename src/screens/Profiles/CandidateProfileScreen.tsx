@@ -14,9 +14,9 @@ import {
   Divider,
 } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BASE_URL } from '../utils/config';
 
-const BASE_URL = 'http://10.0.2.2:8000';
-const DEFAULT_PIC = `${BASE_URL}/media/defaults/deafaultpic1.jpg`;
+
 
 const CandidateProfileScreen = ({ route }) => {
   const { candidateId } = route.params;

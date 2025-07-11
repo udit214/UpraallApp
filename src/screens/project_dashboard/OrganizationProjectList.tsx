@@ -15,6 +15,7 @@ import { Text, Button, Card, Title, Paragraph } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
+import { BASE_URL } from '../utils/config';
 
 const OrganizationProjectList = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -56,7 +57,7 @@ const OrganizationProjectList = () => {
     setToken(storedToken);
 
     try {
-      const response = await fetch('http://192.168.1.5:8000/api/auth/projects/dashboard/', {
+      const response = await fetch(`${BASE_URL}/api/auth/projects/dashboard/`, {
         headers: {
           Authorization: `Token ${storedToken}`,
         },
@@ -101,7 +102,7 @@ const OrganizationProjectList = () => {
 
     try {
       setLoading(true);
-      const response = await fetch('http://10.0.2.2:8000/api/auth/projects/create/', {
+      const response = await fetch(`${BASE_URL}/api/auth/projects/create/`, {
         method: 'POST',
         headers: {
           Authorization: `Token ${token}`,
