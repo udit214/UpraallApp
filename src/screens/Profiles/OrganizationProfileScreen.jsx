@@ -16,6 +16,9 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const BASE_URL = 'http://10.0.2.2:8000';
+const DEFAULT_PROFILE_PIC = `${BASE_URL}/media/defaults/deafaultpic1.jpg`;
+
 const OrganizationProfileScreen = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -24,7 +27,7 @@ const OrganizationProfileScreen = () => {
   const fetchProfile = async () => {
     try {
       const token = await AsyncStorage.getItem('authToken');
-      const res = await fetch('http://10.0.2.2:8000/api_profile/organization/profile/', {
+      const res = await fetch(`${BASE_URL}/api_profile/organization/profile/`, {
         headers: { Authorization: `Token ${token}` },
       });
 
@@ -50,10 +53,12 @@ const OrganizationProfileScreen = () => {
 
   const getLogoUri = () => {
     if (profile?.logo?.startsWith('http')) return profile.logo;
-    if (typeof profile?.logo === 'string') {
-      return `http://10.0.2.2:8000${profile.logo}`;
+
+    if (typeof profile?.logo === 'string' && profile.logo !== 'null' && profile.logo !== '') {
+      return `${BASE_URL}${profile.logo}`;
     }
-    return 'https://via.placeholder.com/160';
+
+    return DEFAULT_PROFILE_PIC;
   };
 
   if (loading || !profile) {
@@ -64,29 +69,24 @@ const OrganizationProfileScreen = () => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
         <Surface style={styles.card} elevation={4}>
-          console.log('🖼️ logo uri = ', getLogoUri());
-
-                <Image
-        source={{ uri: getLogoUri() }}
-        style={styles.logo}
-        resizeMode="cover"
-      />
-          <Text style={styles.name}>{profile.name}</Text>
-          <Text style={styles.description}>{profile.description}</Text>
+          <Image
+            source={{ uri: getLogoUri() }}
+            style={styles.logo}
+            resizeMode="cover"
+          />
+          <Text style={styles.name}>{profile.company_name}</Text>
+          <Text style={styles.description}>{profile.description || 'No description available.'}</Text>
 
           <Divider style={styles.divider} />
 
           <View style={styles.infoRow}>
             <Text style={styles.label}>📧 Email</Text>
-            <Text style={styles.value}>{profile.email}</Text>
+            <Text style={styles.value}>{profile.email || 'N/A'}</Text>
           </View>
+
           <View style={styles.infoRow}>
             <Text style={styles.label}>📞 Phone</Text>
-            <Text style={styles.value}>{profile.phone}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>📍 Address</Text>
-            <Text style={styles.value}>{profile.address}</Text>
+            <Text style={styles.value}>{profile.phone || 'N/A'}</Text>
           </View>
 
           {profile.website && (

@@ -1,9 +1,10 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import Organization ,Project,Candidate , CandidateProfile
+from .models import Organization ,Project,Candidate 
 from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework.authtoken.models import Token
+from ProfileApp.models import CandidateProfile
 
 
 @receiver(post_save, sender=Organization)
@@ -72,7 +73,7 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
 
 
-@receiver(post_save, sender=Candidate)
-def create_candidate_profile(sender, instance, created, **kwargs):
-    if created:
-        CandidateProfile.objects.create(candidate=instance)
+# @receiver(post_save, sender=Candidate)
+# def create_candidate_profile(sender, instance, created, **kwargs):
+#     if created:
+#         CandidateProfile.objects.create(candidate=instance)

@@ -12,6 +12,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import OrganizationProfileScreen from '../screens/Profiles/OrganizationProfileScreen';
 import EditProfileScreen from '../screens/Profiles/EditProfileScreen';
+import CandidateCreationScreen from '../screens/Auth/CreateCandidateScreen';
+import CandidateProfileScreen from '../screens/Profiles/CandidateProfileScreen';
 
 const Drawer1 = createDrawerNavigator()
 const Drawer2 = createDrawerNavigator()
@@ -19,6 +21,7 @@ const Stack = createStackNavigator()
 const RootStack = createStackNavigator();
 const Tabnav = createBottomTabNavigator()
 const Profilestack = createStackNavigator()
+const addmemberstacknav = createStackNavigator()
 
 const ProfilePageStack = () => {
   return(
@@ -53,8 +56,9 @@ const TabNavigation = ({route}) =>{
         initialParams={{ project }}
       />
       <Tabnav.Screen
-        name="Notice"
-        component={ProjectDashboard}
+        name="Member
+        "
+        component={CandidateCreationNavigator}
         options={{
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="home" size={24} color={color} />
@@ -73,6 +77,18 @@ const TabNavigation = ({route}) =>{
         initialParams={{ project }}
       />
     </Tabnav.Navigator>
+  )
+}
+
+const CandidateCreationNavigator = ({route}) => {
+  const {project} = route.params || {}
+
+  return(
+    <addmemberstacknav.Navigator screenOptions={{headerShown:false}}>
+      <addmemberstacknav.Screen name='home' component={CandidateCreationScreen} initialParams={{project}} />
+      <Stack.Screen name="CandidateProfile" component={CandidateProfileScreen} />
+
+    </addmemberstacknav.Navigator>
   )
 }
 
@@ -119,6 +135,7 @@ const PMPDrawer = ({ route, setIsLoggedIn }) => {
     </Drawer2.Navigator>
   );
 };
+
 
 
 const DrawerGroup1 = ({ setIsLoggedIn }) => {

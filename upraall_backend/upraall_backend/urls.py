@@ -23,7 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/' , include('authapp.urls')),
     path('api_doc/' , include('documents.urls')),
-    path('api_profile/' , include('ProfileApp.urls'))
+    path('api_profile/' , include('ProfileApp.urls')),
+    path('api_tasks/' , include('Tasks.urls'))
 ]
 
 if settings.DEBUG:

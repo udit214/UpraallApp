@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'authapp',
     'documents',
     'ProfileApp',
+    'Tasks',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders'

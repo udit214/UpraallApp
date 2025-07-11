@@ -106,27 +106,6 @@ class Project(models.Model):
         return self.name
 
     
-# class Candidate(models.Model):
-#     MALE = 'male'
-#     FEMALE = 'female'
-
-#     GENDER_CHOICES = (
-#         (MALE, 'Male'),
-#         (FEMALE, 'Female'),
-#     )
-
-#     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="candidate_profile")
-#     gender = models.CharField(max_length=6, choices=GENDER_CHOICES, default=MALE)  # Add gender field
-#     date_of_birth = models.DateField()
-#     project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name="candidates")
-
-#     def __str__(self):
-#         return f'{self.user.email} - {self.gender}'
-
-
-
-
-
 class Candidate(models.Model):
     MALE = 'male'
     FEMALE = 'female'
@@ -144,22 +123,29 @@ class Candidate(models.Model):
         return self.user.email
 
 
-class CandidateProfile(models.Model):
-    candidate = models.OneToOneField(Candidate, on_delete=models.CASCADE, related_name="profile")
-    bio = models.TextField(blank=True)
-    website = models.URLField(blank=True)
-    profile_picture = models.ImageField(upload_to="candidate_profiles/", blank=True, null=True)
-    phone = models.CharField(max_length=20, blank=True)
 
-    def __str__(self):
-        return f"{self.candidate.user.email}'s Profile"
 
 
 class CandidateProject(models.Model):
-    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, related_name="project_roles")
+    STATUS_PENDING = 'pending'
+    STATUS_ACCEPTED = 'accepted'
+    STATUS_REJECTED = 'rejected'
+
+    JOINING_STATUS_CHOICES = [
+        (STATUS_PENDING, 'Pending'),
+        (STATUS_ACCEPTED, 'Accepted'),
+        (STATUS_REJECTED, 'Rejected'),
+    ]
+
+    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, related_name="myprojects")
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="candidates")
     role = models.CharField(max_length=100)
     joined_at = models.DateTimeField(auto_now_add=True)
+    joining_status = models.CharField(
+        max_length=10,
+        choices=JOINING_STATUS_CHOICES,
+        default=STATUS_PENDING,
+    )
 
     def __str__(self):
-        return f"{self.candidate.user.email} in {self.project.name} as {self.role}"
+        return f"{self.candidate.user.email} in {self.project.name} as {self.role} ({self.joining_status})"

@@ -1,31 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
+  View, Text, ScrollView, StyleSheet,
 } from 'react-native';
 import { Card, Button, Avatar, useTheme, Divider, ProgressBar } from 'react-native-paper';
+import axios from 'axios';
 
-const ProjectDashboard = ({navigation, route}) => {
+const ProjectDashboard = ({ navigation, route }) => {
   const theme = useTheme();
   const { project } = route.params;
-  // Sample data
-  //   const [project] = useState({
-  //   name: 'Mumbai Flyover A1',
-  //   status: 'Active',
-  //   progress: 0.62,
-  //   startDate: '2025-06-01',
-  //   endDate: '2025-12-31',
-  // });
 
-  const [team] = useState([
-    { id: 1, name: 'Rajiv Kumar' },
-    { id: 2, name: 'Priya Sharma' },
-    { id: 3, name: 'Aman Verma' },
-  ]);
+  const [team, setTeam] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAcceptedCandidates();
+  }, []);
+
+  const fetchAcceptedCandidates = async () => {
+    try {
+      const response = await axios.get(`http://10.0.2.2:8000/projects/${project.id}/accepted-candidates/`);
+      setTeam(response.data);
+    } catch (error) {
+      console.error('Error fetching candidates:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -50,35 +50,30 @@ const ProjectDashboard = ({navigation, route}) => {
 
       <Divider style={styles.divider} />
 
-      <View style={styles.actionRow}>
-        <Button icon="plus" mode="outlined" onPress={() => {}}>Add Task</Button>
-        <Button icon="file-upload" mode="outlined" onPress={() => {}}>Upload Doc</Button>
-        <Button icon="calendar" mode="outlined" onPress={() => {}}>Add Event</Button>
-      </View>
-
-      <Divider style={styles.divider} />
-
       <Text style={styles.sectionTitle}>Team Members</Text>
       <View style={styles.teamList}>
-        {team.map((member) => (
-          <View key={member.id} style={styles.memberRow}>
-            <Avatar.Text size={36} label={member.name.charAt(0)} style={styles.avatar} />
-            <Text style={styles.memberName}>{member.name}</Text>
-          </View>
-        ))}
-        <Button
-          icon="account-plus"
-          mode="contained"
-          style={styles.addMemberButton}
-          onPress={() => {navigation.navigate('CreateCandidate')}}
-        >
-          Add Member
-        </Button>
+        {loading ? (
+          <Text style={{ color: '#aaa' }}>Loading...</Text>
+        ) : team.length === 0 ? (
+          <Text style={{ color: '#888' }}>No accepted team members yet.</Text>
+        ) : (
+          team.map((member) => (
+            <View key={member.id} style={styles.memberRow}>
+              <Avatar.Text
+                size={36}
+                label={member.name?.charAt(0).toUpperCase() || '?'}
+                style={styles.avatar}
+              />
+              <Text style={styles.memberName}>{member.name}</Text>
+            </View>
+          ))
+        )}
       </View>
     </ScrollView>
   );
 };
 
+export default ProjectDashboard;
 const styles = StyleSheet.create({
 
   headerCard: {
@@ -195,4 +190,3 @@ floatingButton: {
 
 
 
-export default ProjectDashboard;

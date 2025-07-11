@@ -23,6 +23,8 @@ const EditProfileScreen = ({ navigation }) => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const DEFAULT_LOGO = `${BASE_URL}/media/defaults/deafaultpic1.jpg`;
+
   const theme = useTheme();
 
   const fetchProfile = async () => {
@@ -60,7 +62,7 @@ const EditProfileScreen = ({ navigation }) => {
       const token = await AsyncStorage.getItem('authToken');
       const formData = new FormData();
 
-      ['name', 'email', 'phone', 'address', 'description', 'website'].forEach(field => {
+      ['company_name', 'phone', 'address', 'description', 'website'].forEach(field => {
         formData.append(field, profile[field] || '');
       });
 
@@ -106,14 +108,16 @@ const EditProfileScreen = ({ navigation }) => {
   }
 
   const getLogoUri = () => {
-    if (profile.logo?.uri) return profile.logo.uri;
-    if (typeof profile.logo === 'string') {
-      return profile.logo.startsWith('http')
-        ? profile.logo
-        : `${BASE_URL}${profile.logo}`;
-    }
-    return 'https://via.placeholder.com/150';
-  };
+  if (profile.logo?.uri) return profile.logo.uri;
+
+  if (typeof profile.logo === 'string') {
+    return profile.logo.startsWith('http')
+      ? profile.logo
+      : `${BASE_URL}${profile.logo}`;
+  }
+
+  return DEFAULT_LOGO;
+};
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 50 }}>
@@ -122,7 +126,7 @@ const EditProfileScreen = ({ navigation }) => {
         <Text style={styles.editImageText}>Tap to change logo</Text>
       </TouchableOpacity>
 
-      {['name', 'email', 'phone', 'address', 'website', 'description'].map(field => (
+      {['company_name','phone', 'address', 'website', 'description'].map(field => (
         <TextInput
           key={field}
           label={field.charAt(0).toUpperCase() + field.slice(1)}

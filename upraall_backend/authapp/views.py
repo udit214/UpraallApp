@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 import json
 from django.core.mail import send_mail
-from .models import User, Organization , Project
+from .models import User, Organization , Project ,Candidate,CandidateProject
 from django.contrib.auth import login
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -20,6 +20,10 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import BasePermission
 from rest_framework import status
 from rest_framework.views import APIView
+from .serializers import CandidateCreateSerializer,CandidateListSerializer,RequestedCandidateSerializer,CandidateProfileSerializer
+from ProfileApp.models import CandidateProfile
+
+
 @csrf_exempt
 def organization_signup(request):
     if request.method == 'POST':
@@ -170,12 +174,98 @@ def create_project(request):
         return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
+
+
 class CreateCandidateView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        serializer = CreateCandidateSerializer(data=request.data)
+        serializer = CandidateCreateSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            candidate = serializer.save()
-            return Response({"message": "Candidate created successfully"}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            serializer.save()
+            return Response({'detail': 'Candidate created successfully and notified via email.'}, status=201)
+        return Response(serializer.errors, status=400)
+    
+
+
+
+class OrganizationCandidatesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        organization = request.user.organization_profile
+        project_id = request.data.get("project_id")
+
+        if not project_id:
+            return Response({"detail": "Project ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get all candidates of the org
+        all_candidates = Candidate.objects.filter(organization=organization)
+        candidate_projects = CandidateProject.objects.filter(project_id=project_id)
+        requested_ids = list(candidate_projects.values_list("candidate_id", flat=True))
+
+
+        available_candidates = all_candidates.exclude(id__in=requested_ids)
+        requested_candidates = CandidateProject.objects.filter(project = project_id)
+        
+
+
+        available_profiles = CandidateProfile.objects.select_related('candidate__user').filter(candidate__in=available_candidates)
+        requested_profiles = CandidateProfile.objects.select_related('candidate__user').filter(candidate__in=requested_ids)
+        
+        # Serialize
+        available_profiles__serializer = CandidateProfileSerializer(available_profiles, many=True)
+        requested_profiles_serializer = CandidateProfileSerializer(requested_profiles, many=True)
+
+        available_candidates_serializer = CandidateListSerializer(available_candidates , many=True)
+        requested_candidates_serializer = RequestedCandidateSerializer(requested_candidates , many=True)
+
+        return Response({
+            'requested_profiles':requested_profiles_serializer.data,
+            'available_profiles':available_profiles__serializer.data,
+            'available_candidates':available_candidates_serializer.data,
+            'requested_candidates':requested_candidates_serializer.data,
+        })
+
+class AssignCandidateToProjectView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        candidate_id = request.data.get('candidate_id')
+        project_id = request.data.get('project_id')
+        role = request.data.get('role')
+
+        if not candidate_id or not project_id or not role:
+            return Response({"detail": "Missing fields"}, status=400)
+
+        candidate = get_object_or_404(Candidate, id=candidate_id)
+        project = get_object_or_404(Project, id=project_id)
+
+        # Prevent duplicate requests
+        if CandidateProject.objects.filter(candidate=candidate, project=project).exists():
+            return Response({"detail": "Candidate already assigned or requested."}, status=400)
+
+        CandidateProject.objects.create(
+            candidate=candidate,
+            project=project,
+            role=role,
+            joining_status='pending'
+        )
+
+        return Response({"detail": "Candidate assigned successfully!"}, status=201)
+    
+
+@api_view(['GET'])
+def get_accepted_candidates(request, project_id):
+    candidates = CandidateProject.objects.filter(
+        project_id=project_id,
+        joining_status='accepted'
+    ).select_related('candidate__user')
+    
+    data = [{
+        'id': cp.candidate.id,
+        'name': cp.candidate.user.get_full_name() or cp.candidate.user.username,
+        'email': cp.candidate.user.email,
+    } for cp in candidates]
+    
+    return Response(data)
