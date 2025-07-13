@@ -18,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import { BASE_URL } from '../utils/config';
 
 const OrganizationProjectList = () => {
+  console.log(BASE_URL , 'iam your url for this page')
   const [modalVisible, setModalVisible] = useState(false);
   const [projectName, setProjectName] = useState('');
   const [projectDescription, setProjectDescription] = useState('');

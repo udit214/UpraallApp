@@ -22,6 +22,7 @@ const RootStack = createStackNavigator();
 const Tabnav = createBottomTabNavigator()
 const Profilestack = createStackNavigator()
 const addmemberstacknav = createStackNavigator()
+const HomeScreenStack = createStackNavigator()
 
 const ProfilePageStack = () => {
   return(
@@ -33,6 +34,7 @@ const ProfilePageStack = () => {
     </Profilestack.Navigator>
   )
 }
+
 
 
 const TabNavigation = ({route}) =>{
@@ -47,7 +49,7 @@ const TabNavigation = ({route}) =>{
     >
       <Tabnav.Screen
         name="Home"
-        component={ProjectDashboard}
+        component={HomeNavigator}
         options={{
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="home" size={24} color={color} />
@@ -80,6 +82,15 @@ const TabNavigation = ({route}) =>{
   )
 }
 
+const HomeNavigator = ({route}) =>{
+  const {project} = route.params || {}
+  return(
+    <HomeScreenStack.Navigator screenOptions={{headerShown:false}}>
+      <HomeScreenStack.Screen name='HomeScreen' component={ProjectDashboard} initialParams={{project}}/>
+      <HomeScreenStack.Screen name='CandiateProfileHome' component={CandidateProfileScreen}/>
+    </HomeScreenStack.Navigator>
+  )
+}
 const CandidateCreationNavigator = ({route}) => {
   const {project} = route.params || {}
 

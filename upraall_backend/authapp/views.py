@@ -255,17 +255,30 @@ class AssignCandidateToProjectView(APIView):
         return Response({"detail": "Candidate assigned successfully!"}, status=201)
     
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .models import CandidateProject
+
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_accepted_candidates(request, project_id):
     candidates = CandidateProject.objects.filter(
         project_id=project_id,
         joining_status='accepted'
-    ).select_related('candidate__user')
-    
+    ).select_related('candidate__user', 'candidate__profile')  # ✅ include profile
+
     data = [{
         'id': cp.candidate.id,
-        'name': cp.candidate.user.get_full_name() or cp.candidate.user.username,
         'email': cp.candidate.user.email,
+        'role': cp.role,  
+        'profile': {
+            'username': cp.candidate.profile.username,
+            'bio': cp.candidate.profile.bio,
+            'website': cp.candidate.profile.website,
+            'phone': cp.candidate.profile.phone,
+            'profile_picture': request.build_absolute_uri(cp.candidate.profile.profile_picture.url) if cp.candidate.profile.profile_picture else None,
+        }
     } for cp in candidates]
-    
+
     return Response(data)

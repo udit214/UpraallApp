@@ -10,4 +10,6 @@ urlpatterns = [
     path('candidates/create/', views.CreateCandidateView.as_view(), name='create-candidate'),
     path('organization/candidates/', views.OrganizationCandidatesView.as_view(), name='organization-candidates'),
     path('candidates/assign/', views.AssignCandidateToProjectView.as_view()),
+    path('projects/<int:project_id>/accepted-candidates/', views.get_accepted_candidates),
+
 ]

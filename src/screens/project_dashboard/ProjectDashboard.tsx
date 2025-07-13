@@ -1,33 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, ScrollView, StyleSheet,
+  View, Text, ScrollView, StyleSheet,TouchableOpacity,
 } from 'react-native';
 import { Card, Button, Avatar, useTheme, Divider, ProgressBar } from 'react-native-paper';
 import axios from 'axios';
 import { BASE_URL } from '../utils/config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProjectDashboard = ({ navigation, route }) => {
+  
   const theme = useTheme();
   const { project } = route.params;
 
   const [team, setTeam] = useState([]);
   const [loading, setLoading] = useState(true);
+  const handleProfilePress = (member) => {
+  navigation.navigate('CandidateProfileScreen', { candidate: member });
+};
+
 
   useEffect(() => {
     fetchAcceptedCandidates();
   }, []);
 
-  const fetchAcceptedCandidates = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}/projects/${project.id}/accepted-candidates/`);
-      setTeam(response.data);
-    } catch (error) {
-      console.error('Error fetching candidates:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+const fetchAcceptedCandidates = async () => {
+  try {
+    // Make sure this matches the key you use during login
+    const token = await AsyncStorage.getItem('authToken');
 
+    if (!token) {
+      console.error('No auth token found.');
+      return;
+    }
+
+    const response = await axios.get(
+      `${BASE_URL}/api/auth/projects/${project.id}/accepted-candidates/`,
+      {
+        headers: {
+          Authorization: `Token ${token}`, // ✅ DRF TokenAuth format
+        },
+      }
+    );
+    console.log('API response:', response.data , 'i am response.data');
+    setTeam(response.data);
+  } catch (error) {
+    console.error(
+      'Error fetching candidates:',
+      error.response?.data || error.message
+    );
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <ScrollView style={styles.container}>
       <Card style={styles.headerCard}>
@@ -59,15 +83,31 @@ const ProjectDashboard = ({ navigation, route }) => {
           <Text style={{ color: '#888' }}>No accepted team members yet.</Text>
         ) : (
           team.map((member) => (
-            <View key={member.id} style={styles.memberRow}>
-              <Avatar.Text
-                size={36}
-                label={member.name?.charAt(0).toUpperCase() || '?'}
-                style={styles.avatar}
-              />
-              <Text style={styles.memberName}>{member.name}</Text>
-            </View>
-          ))
+  <TouchableOpacity
+    key={member.id}
+    onPress={() => navigation.navigate('CandiateProfileHome', { candidateId: member.id })}
+    activeOpacity={0.8}
+    style={styles.profileCard}
+  >
+    <View style={styles.profileRow}>
+      <Avatar.Image
+        size={48}
+        source={{ uri: member.profile?.profile_picture }}
+        style={styles.avatarImage}
+      />
+      <View style={styles.profileDetails}>
+        <Text style={styles.profileName}>
+          {member.profile?.username || member.name || 'Unnamed'}
+        </Text>
+        <Text style={styles.profileRole}>
+          {member.role || 'No role assigned'}
+        </Text>
+      </View>
+    </View>
+  </TouchableOpacity>
+))
+
+
         )}
       </View>
     </ScrollView>
@@ -186,6 +226,39 @@ floatingButton: {
   shadowOpacity: 0.3,
   shadowRadius: 4,
 },
+profileCard: {
+  backgroundColor: '#1f1f1f',
+  marginBottom: 12,
+  padding: 12,
+  borderRadius: 10,
+},
+
+profileRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+
+avatarImage: {
+  backgroundColor: '#333',
+},
+
+profileDetails: {
+  marginLeft: 12,
+  flex: 1,
+},
+
+profileName: {
+  color: '#fff',
+  fontSize: 16,
+  fontWeight: '600',
+},
+
+profileRole: {
+  color: '#aaa',
+  fontSize: 14,
+  marginTop: 2,
+},
+
 
 });
 
