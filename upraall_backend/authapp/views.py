@@ -280,5 +280,5 @@ def get_accepted_candidates(request, project_id):
             'profile_picture': request.build_absolute_uri(cp.candidate.profile.profile_picture.url) if cp.candidate.profile.profile_picture else None,
         }
     } for cp in candidates]
-
+    print(data)
     return Response(data)
